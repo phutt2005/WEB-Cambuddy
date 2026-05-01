@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Globe, Play, Camera, Star, Cloud, CheckCircle2, ChevronRight, Apple, Smartphone, Monitor, Quote, X } from 'lucide-react';
+import { Search, Globe, Play, Camera, Star, Cloud, CheckCircle2, ChevronRight, Apple, Smartphone, Monitor, Quote, X, Menu } from 'lucide-react';
 
 interface SharedProps {
   setPage: (page: 'home' | 'pricing' | 'business') => void;
@@ -8,33 +8,42 @@ interface SharedProps {
 }
 
 const Navbar = ({ setPage }: SharedProps) => {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  const navItems = [
+    { label: 'Mức giá', id: 'pricing' as const },
+    { label: 'Dành cho doanh nghiệp', id: 'business' as const },
+  ];
+
+  const handleNavClick = (page: 'home' | 'pricing' | 'business') => {
+    setPage(page);
+    setIsMenuOpen(false);
+  };
+
   return (
-    <header className="fixed top-0 w-full z-50 bg-black/60 backdrop-blur-md border-b border-white/10 flex flex-col transition-all duration-300">
-      <div className="w-full max-w-[1280px] mx-auto flex justify-between items-center px-6 md:px-8 py-4">
-        <div className="flex items-center gap-8">
+    <header className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/10 transition-all duration-300">
+      <div className="w-full max-w-[1280px] mx-auto flex justify-between items-center px-4 md:px-8 py-4">
+        <div className="flex items-center gap-4 md:gap-8">
           <span 
-            className="text-2xl font-black bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent cursor-pointer tracking-tight"
-            onClick={() => setPage('home')}
+            className="text-xl md:text-2xl font-black bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent cursor-pointer tracking-tight"
+            onClick={() => handleNavClick('home')}
           >
             CamBuddy
           </span>
           <nav className="hidden md:flex items-center gap-6">
-            <button 
-              onClick={() => setPage('pricing')}
-              className="text-white/70 hover:text-white transition-all duration-300 font-semibold text-sm"
-            >
-              Mức giá
-            </button>
-            <button 
-              onClick={() => setPage('business')}
-              className="text-white/70 hover:text-white transition-all duration-300 font-semibold text-sm"
-            >
-              Dành cho doanh nghiệp
-            </button>
+            {navItems.map((item) => (
+              <button 
+                key={item.id}
+                onClick={() => setPage(item.id)}
+                className="text-white/70 hover:text-white transition-all duration-300 font-semibold text-sm whitespace-nowrap"
+              >
+                {item.label}
+              </button>
+            ))}
           </nav>
         </div>
         
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 md:gap-6">
           <div className="relative hidden lg:block">
             <input 
               type="text" 
@@ -43,14 +52,56 @@ const Navbar = ({ setPage }: SharedProps) => {
             />
             <Search className="absolute right-3 top-2.5 w-4 h-4 text-white/40" />
           </div>
-          <div className="flex items-center gap-4">
-            <button className="text-white/70 hover:text-white font-bold text-sm transition-all">Login</button>
-            <button className="bg-brand-gradient px-6 py-2 rounded-full font-bold text-white text-sm bloom-effect hover:scale-105 active:scale-95 transition-all">
+          <div className="flex items-center gap-2 md:gap-4">
+            <button className="text-white/70 hover:text-white font-bold text-xs md:text-sm transition-all hidden sm:block">Login</button>
+            <button className="bg-brand-gradient px-4 md:px-6 py-2 rounded-full font-bold text-white text-xs md:text-sm bloom-effect hover:scale-105 active:scale-95 transition-all whitespace-nowrap">
               Get Started
             </button>
           </div>
+          
+          <button 
+            className="md:hidden text-white p-1"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-black/95 border-b border-white/10 overflow-hidden"
+          >
+            <div className="px-6 py-8 flex flex-col gap-6">
+              {navItems.map((item) => (
+                <button 
+                  key={item.id}
+                  onClick={() => handleNavClick(item.id)}
+                  className="text-white text-lg font-bold text-left border-b border-white/5 pb-4 w-full"
+                >
+                  {item.label}
+                </button>
+              ))}
+              <div className="flex flex-col gap-4 pt-4">
+                <button className="text-white/70 hover:text-white font-bold text-lg text-left" onClick={() => setIsMenuOpen(false)}>Login</button>
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    placeholder="Tìm kiếm..." 
+                    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-indigo-500"
+                  />
+                  <Search className="absolute right-4 top-3.5 w-5 h-5 text-white/40" />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
@@ -387,12 +438,12 @@ const PricingPage = ({ setPage }: SharedProps) => {
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
       exit={{ opacity: 0 }}
-      className="pt-32 pb-24 max-w-[1280px] mx-auto px-8"
+      className="pt-24 md:pt-32 pb-16 md:pb-24 max-w-[1280px] mx-auto px-4 md:px-8"
     >
-      <div className="text-center mb-16">
+      <div className="text-center mb-12 md:mb-16">
         <span className="inline-block px-4 py-1 mb-6 rounded-full border border-primary/30 bg-primary/10 text-primary font-bold text-xs uppercase tracking-widest">Nâng Tầm Hình Ảnh</span>
-        <h1 className="text-4xl md:text-7xl font-black mb-10 tracking-tight shimmer-text uppercase py-4 leading-[1.2]">Chụp ảnh đẹp ngay từ lần đầu</h1>
-        <p className="max-w-2xl mx-auto text-on-surface-variant text-lg mb-12">
+        <h1 className="text-3xl sm:text-4xl md:text-7xl font-black mb-6 md:mb-10 tracking-tight shimmer-text uppercase py-2 md:py-4 leading-tight md:leading-[1.2]">Chụp ảnh đẹp ngay từ lần đầu</h1>
+        <p className="max-w-2xl mx-auto text-on-surface-variant text-base md:text-lg mb-8 md:mb-12">
           Dùng Premium để có bố cục, dáng chụp và góc máy tối ưu cho từng bối cảnh mà không cần thử lại nhiều lần. Có thể hủy bất cứ lúc nào.
         </p>
       </div>
@@ -556,16 +607,16 @@ const BusinessPage = ({ setPage }: SharedProps) => {
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
       exit={{ opacity: 0 }}
-      className="pt-24"
+      className="pt-24 md:pt-32 overflow-hidden"
     >
-      <section className="relative pt-24 pb-32 overflow-hidden px-8 max-w-[1280px] mx-auto">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+      <section className="relative pt-12 pb-24 md:pt-24 md:pb-32 overflow-hidden px-4 md:px-8 max-w-[1280px] mx-auto">
+        <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
           <div className="z-10">
             <span className="font-bold text-primary mb-6 block uppercase tracking-[0.3em] text-sm">AI PHOTOGRAPHY REVOLUTION</span>
-            <h1 className="text-5xl md:text-7xl font-black mb-8 leading-[0.9] uppercase tracking-tighter">
+            <h1 className="text-5xl md:text-7xl font-black mb-8 leading-[1.15] md:leading-[1.1] uppercase tracking-tight py-2">
               CamBuddy AI – <br />
-              <span className="shimmer-text">GIẢI PHÁP HÌNH ẢNH</span> <br />
-              CHO DOANH NGHIỆP
+              <span className="shimmer-text">GIẢI PHÁP <br /> HÌNH ẢNH</span> <br />
+              <span className="text-white">CHO DOANH <br /> NGHIỆP</span>
             </h1>
             <p className="text-on-surface-variant text-lg md:text-xl mb-12 max-w-lg font-medium">
               Cách mạng hóa trải nghiệm khách hàng với công nghệ AI chụp ảnh đỉnh cao ngay tại cửa hàng của bạn.
@@ -854,7 +905,7 @@ export default function App() {
     <div className="min-h-screen bg-surface selection:bg-primary-container selection:text-white">
       <Navbar setPage={setPage} />
       
-      <main>
+      <main className="pt-16 md:pt-0">
         <AnimatePresence mode="wait">
           {page === 'home' && <HomePage key="home" setPage={setPage} />}
           {page === 'pricing' && <PricingPage key="pricing" setPage={setPage} />}
