@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -33,7 +34,7 @@
 
 @layer utilities {
   .bg-brand-gradient {
-    background: linear-gradient(to right, #765aff, #f95aff);
+    background: linear-gradient(135deg, #765aff 0%, #f95aff 100%);
   }
   
   .text-brand-gradient {
@@ -42,15 +43,19 @@
   }
   
   .glass-card {
-    @apply bg-[rgba(18,18,18,0.7)] backdrop-blur-xl border border-white/10;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
+
+  .glass-card:hover { border-color: rgba(118, 90, 255, 0.5); }
   
   .shimmer-text {
-    background: linear-gradient(90deg, #765aff, #f95aff, #765aff);
+    background: linear-gradient(90deg, #765aff, #f95aff, #ffffff, #765aff, #f95aff);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: shimmer 4s linear infinite;
+    animation: hologram-shine 8s linear infinite;
   }
 
   .bloom-effect {
@@ -58,7 +63,7 @@
   }
 }
 
-@keyframes shimmer {
+@keyframes hologram-shine {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
