@@ -798,7 +798,7 @@ const BusinessPage = ({ setPage }: SharedProps) => {
            ) : (
             <div className="w-full h-full relative bg-black">
                <iframe 
-                 src="https://drive.google.com/file/d/1rF08C7I4Pywa5VfGp9kVc4owyAYiHr8g/preview" 
+                 src="https://drive.google.com/file/d/1BNKrGxskhUFgbdYA7gP50QLBQx-rTDEb/view?usp=sharing" 
                  className="w-full h-full border-none"
                  allow="autoplay"
                  allowFullScreen
